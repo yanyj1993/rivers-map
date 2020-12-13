@@ -25,4 +25,4 @@ app.use( async ( ctx,next ) => {
 app.use(pageRouter.routes());
 app.use(pageRouter.allowedMethods());
 
-app.listen(3000,e => {console.log("3000启动")});
+app.listen(8082,e => {console.log("8082启动")});
