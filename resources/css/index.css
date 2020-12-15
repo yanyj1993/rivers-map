@@ -5,3 +5,103 @@ html,body,#map {
     margin: 0;
 }
 
+.tools {
+    position: fixed;
+    top: 1%;
+    z-index: 9999;
+    background-color: #fff;
+    width: 200px;
+    box-shadow: 0px 10px 5px #888888;
+    padding: 5px;
+    left: 2%;
+}
+
+.left-tools {
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+}
+
+.left-tool-selected {
+    color: red;
+}
+
+.left-tool-item {
+    flex-grow: 1;
+    text-align: center;
+    border-right: 1px solid #ccc;
+}
+.left-tool-item:last-child {
+    border-right: none;
+}
+
+.legends {
+    position: fixed;
+    bottom: 1%;
+    z-index: 9999;
+    background-color: #fff;
+    width: 300px;
+    box-shadow: 10px 0px 5px #888888;
+    padding: 5px;
+    left: 2%;
+}
+
+.water-quality-legends {
+    display: none;
+    padding-left: 23px;
+
+}
+
+.wq-levels {
+    display: flex;
+}
+
+.wq-level {
+    flex-grow: 1;
+}
+/*
+ 0.1: '#62BBE2',
+                0.2: '#6098D3',
+                0.3: '#84BD48',
+                0.4: '#EEC112',
+                0.5: '#F5901C',
+                1.0: '#f50e62',*/
+.wq-levels-chart {
+    width: 250px;
+    height: 50px;
+    background: -webkit-linear-gradient(left, #62BBE2,#6098D3,#84BD48,#EEC112,#F5901C,#f50e62);
+}
+
+.rivers-selected {
+    position: fixed;
+    top: 7%;
+    z-index: 9999;
+    background-color: #fff;
+    width: 200px;
+    box-shadow: 0px 10px 5px #888888;
+    padding: 5px;
+    left: 2%;
+    display: flex;
+}
+
+#riversSelect {
+    border: solid 1px #ccc;
+    border-radius: 2px;
+    /*很关键：将默认的select选择框样式清除*/
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    padding-left: 5px;
+    height: 24px;
+
+    /*在选择框的最右侧中间显示小箭头图片*/
+    background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+
+
+    /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+    padding-right: 14px;
+}
+
+.wq {
+    display: none;
+}

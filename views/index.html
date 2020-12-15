@@ -6,10 +6,48 @@
 </head>
 <body>
 <div id="map"></div>
+<div class="tools">
+    <div class="left-tools">
+        <div class="left-tool-item tool-item" id="wq">水质</div>
+        <div class="left-tool-item tool-item" id="label">标注</div>
+    </div>
+</div>
+
+<div class="rivers-selected wq">
+    <div style="width:100%;display: flex">
+        <div class="select-label">河流选择:</div>
+        <div class="select-field">
+            <select name="" id="riversSelect">
+                <option value="">全部河流</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="wqTime-area" style="display: none">
+        <input id="wqTime" type="checkbox"> 开启水质时空轨迹
+    </div>
+</div>
+
+<div class="legends">
+    <div class="water-quality-legends wq">
+        <div class="wq-levels">
+            <div class="wq-level">I级</div>
+            <div class="wq-level">Ⅱ级</div>
+            <div class="wq-level">Ⅲ级</div>
+            <div class="wq-level">Ⅳ级</div>
+            <div class="wq-level">Ⅴ级</div>
+        </div>
+        <div class="wq-levels-chart">
+        </div>
+    </div>
+</div>
 </body>
 <link rel="stylesheet" href="/asserts/leaflet/leaflet.css" />
+<link rel="stylesheet" href="/asserts/leaflet/plugins/leaflet-label/leaflet-label.css" />
 <link rel="stylesheet" href="/css/index.css" />
+<script src="/asserts/jquery/jquery-3.5.1.js"></script>
 <script src="/asserts/leaflet/leaflet.js"></script>
-<script src="/asserts/leaflet/tdtLayer.js"></script>
+<script src="/asserts/leaflet/plugins/leaflet-hotline.js"></script>
+<script src="/asserts/leaflet/plugins/leaflet-label/leaflet-label.js"></script>
 <script src="/js/index.js"></script>
 </html>
