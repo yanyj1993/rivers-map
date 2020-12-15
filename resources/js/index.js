@@ -34,7 +34,7 @@ $(document).ready(() => {
             $('.wq').hide();
             app.map.removeLayer(app.riversLayer);
             app.riversLayer = null;
-            stopRiversTime();
+
         } else {
             $(this).addClass('left-tool-selected');
             loadRiverJson();
