@@ -105,3 +105,56 @@ html,body,#map {
 .wq {
     display: none;
 }
+
+
+.labels-panel {
+    position: fixed;
+    top: 10%;
+    z-index: 9999;
+    background-color: #fff;
+    width: 100px;
+    box-shadow: 10px 0 5px #888888;
+    padding: 5px;
+    left: 2%;
+    cursor: pointer;
+    display: none;
+}
+
+.label-pane {
+    padding: 1px 2px;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+}
+
+.label-pane:last-child {
+    border-bottom: none;
+}
+
+.label-pane-selected {
+    color: red;
+}
+
+.row {
+    display: flex;
+    padding: 10px;
+}
+
+.col {
+    display: flex;
+    flex-grow: 1;
+}
+
+.col  > div {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.col > .f-label {
+    width: 20px;
+}
+
+
+.part-title {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
