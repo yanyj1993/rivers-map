@@ -43,6 +43,21 @@ $(document).ready(() => {
         initRiversSelect(app.rivers);
     });
 
+
+    loadGeoJson('/json/nj.json', nj => {
+        L.geoJSON(nj, {
+            style: {
+                "color": "#00f",
+                "weight": 2,
+                "opacity": 0.5,
+                "fillColor": 'red',
+                "fillOpacity": 0,
+            },
+        }).addTo(app.map);
+        // new L.Line3(changeGeoJson(nj)).addTo(app.map);
+       drawBoundary(nj.features[0].geometry.coordinates[0])
+    });
+
     $('#wq').click( function () {
         const selected = $(this).hasClass('left-tool-selected');
 
@@ -156,8 +171,8 @@ function initMap() {
     app.map = L.map("map", {
         minZoom: 1,
         maxZoom: 16,
-        center: [32.09410041642852, 118.78932952880861],
-        zoom: 14,
+        center: [32.04890673772848, 118.84283959865571],
+        zoom: 11,
         zoomDelta: 0.5,
         fullscreenControl: false,
         zoomControl: false,
@@ -409,4 +424,40 @@ function initLayer(layerName) {
 
     app.layers.label[layerName] = L.layerGroup(layers);
    app.map.addLayer(app.layers.label[layerName]);
+}
+
+
+// 边界高亮及遮罩效果
+function drawBoundary(blist) {
+    let pNW = { lat: 59.0, lng: 73.0 };
+    let pNE = { lat: 59.0, lng: 136.0 };
+    let pSE = { lat: 3.0, lng: 136.0 };
+    let pSW = { lat: 3.0, lng: 73.0 };
+    let pArray = [];
+
+    pArray.push(pNW);
+    pArray.push(pSW);
+    pArray.push(pSE);
+    pArray.push(pNE);
+    pArray.push(pNW);
+
+    for (let i = 0; i < blist.length; i++) {
+        let points = [];
+        $.each(blist[i],function(k,v){
+            points.push({lat:v[1],lng:v[0]});
+        });
+        pArray = pArray.concat(points);
+        pArray.push(pArray[0]);
+    }
+    let plyall = L.polygon(pArray, { color:'transparent',fillColor:'#C0C0C0',fillOpacity:0.9 });
+    plyall.addTo(app.map);
+}
+
+function changeGeoJson(json) {
+    let  j = json;
+    let coordinates = json.features[0].geometry.coordinates;
+
+    j.features[0].properties = { color: '#99cc99' };
+    j.features[0].geometry.coordinates = coordinates.map(v => v.map(a => a.map(a1 => [...a1, 5])));
+    return j;
 }

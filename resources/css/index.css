@@ -109,7 +109,7 @@ html,body,#map {
 
 .labels-panel {
     position: fixed;
-    top: 10%;
+    top: 17%;
     z-index: 9999;
     background-color: #fff;
     width: 100px;
