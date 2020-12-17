@@ -154,7 +154,7 @@
         "code": 8101,
         "fclass": "river",
         "width": 0,
-        "name": "南十里长沟"
+        "name": "南十里长沟1段"
       }
     },
     {
@@ -494,7 +494,7 @@
         "code": 8101,
         "fclass": "river",
         "width": 0,
-        "name": "南十里长沟"
+        "name": "南十里长沟2段"
       }
     },
     {
@@ -990,7 +990,7 @@
         "code": 8101,
         "fclass": "river",
         "width": 0,
-        "name": "护城河"
+        "name": "护城河1段"
       }
     },
     {
@@ -1014,7 +1014,7 @@
         "code": 8101,
         "fclass": "river",
         "width": 0,
-        "name": "护城河"
+        "name": "护城河2段"
       }
     },
     {
@@ -1594,7 +1594,7 @@
         "code": 8101,
         "fclass": "river",
         "width": 0,
-        "name": "护城河"
+        "name": "护城河3段"
       }
     },
     {
@@ -1918,7 +1918,7 @@
         "code": 8101,
         "fclass": "river",
         "width": 0,
-        "name": "护城河"
+        "name": "护城河4段"
       }
     }
   ]
