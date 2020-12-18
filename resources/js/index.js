@@ -451,7 +451,7 @@ function drawBoundary(blist) {
         pArray = pArray.concat(points);
         pArray.push(pArray[0]);
     }
-    let plyall = L.polygon(pArray, { color:'transparent',fillColor:'#0c40c0',fillOpacity:0.9 });
+    let plyall = L.polygon(pArray, { color:'transparent',fillColor:'#0c40c0',fillOpacity:0.8 });
     plyall.addTo(app.map);
 }
 
