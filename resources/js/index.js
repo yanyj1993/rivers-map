@@ -8,14 +8,14 @@ window.app = {
   data: {
       jcLayer: [{
           name: '小市监测站',
-          label: 'jc-label.png',
+          label: 'jc-label-1.png',
           coordinate: [32.09410041642852, 118.78932952880861],
 
       }],
 
       qxLayer: [{
           name: '小市气象站',
-          label: 'qx-label.png',
+          label: 'qx-label-1.png',
           coordinate: [32.09110041642852, 118.78132952880861],
 
       }]
@@ -421,7 +421,14 @@ function initLayer(layerName) {
                                 </div>
                             </div>
                        </div>`;
+
        layers.push(L.marker(m.coordinate, {icon}).bindPopup(html, { minWidth: 200, className: 'custom-popup'}));
+       layers.push(L.marker(m.coordinate, {icon:   L.divIcon({
+               html: m.name,
+               className: 'label-text-icon',
+               iconAnchor:   [35, -25], // point of the icon which will correspond to marker's location
+               iconSize:[80, 20]
+           })}).bindPopup(html, { minWidth: 200, className: 'custom-popup'}));
    });
 
     app.layers.label[layerName] = L.layerGroup(layers);
