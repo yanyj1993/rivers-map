@@ -70,7 +70,9 @@ $(document).ready(() => {
                 app.map.removeLayer(app.selectedRiverFeatrue);
                 app.selectedRiverFeatrue = null;
             }
+            app.map.setView([32.04890673772848, 118.84283959865571],11);
         } else {
+            app.map.fitBounds(L.latLngBounds(app.rivers.map(a => a.coordinates).flat()));
             $(this).addClass('left-tool-selected');
             loadRiverJson();
             $('.wq').show();
@@ -85,12 +87,12 @@ $(document).ready(() => {
             // 取消选中
             $(this).removeClass('left-tool-selected');
 
-            $('.label').hide();
+            $('.label').fadeOut('slow');
             removeAllLabel();
             $('.label-pane').removeClass('label-pane-selected');
         } else {
             $(this).addClass('left-tool-selected');
-            $('.label').show();
+            $('.label').fadeIn('slow');
 
         }
     });
@@ -449,7 +451,7 @@ function drawBoundary(blist) {
         pArray = pArray.concat(points);
         pArray.push(pArray[0]);
     }
-    let plyall = L.polygon(pArray, { color:'transparent',fillColor:'#C0C0C0',fillOpacity:0.9 });
+    let plyall = L.polygon(pArray, { color:'transparent',fillColor:'#0c40c0',fillOpacity:0.9 });
     plyall.addTo(app.map);
 }
 

@@ -10,10 +10,11 @@ html,body,#map {
     top: 1%;
     z-index: 9999;
     background-color: #fff;
-    width: 200px;
-    box-shadow: 0px 10px 5px #888888;
+    width: 210px;
+    box-shadow: 0 5px 5px #888888;
     padding: 5px;
     left: 2%;
+    border-radius: 5px;
 }
 
 .left-tools {
@@ -29,7 +30,7 @@ html,body,#map {
 .left-tool-item {
     flex-grow: 1;
     text-align: center;
-    border-right: 1px solid #ccc;
+    border-right: 1px dashed #ccc;
 }
 .left-tool-item:last-child {
     border-right: none;
@@ -44,6 +45,7 @@ html,body,#map {
     box-shadow: 10px 0px 5px #888888;
     padding: 5px;
     left: 2%;
+    border-radius: 5px;
 }
 
 .water-quality-legends {
@@ -79,9 +81,12 @@ html,body,#map {
     background-color: #fff;
     width: 200px;
     box-shadow: 0px 10px 5px #888888;
-    padding: 5px;
     left: 2%;
     display: flex;
+    padding: 10px;
+    left: 2%;
+    display: flex;
+    border-radius: 5px;
 }
 
 #riversSelect {
@@ -109,25 +114,34 @@ html,body,#map {
 
 .labels-panel {
     position: fixed;
-    top: 17%;
+    top: 1%;
     z-index: 9999;
     background-color: #fff;
-    width: 100px;
-    box-shadow: 10px 0 5px #888888;
+    width: 200px;
+    box-shadow: 0px 5px 5px #888888;
     padding: 5px;
-    left: 2%;
+    left: 16%;
     cursor: pointer;
+    /* display: none; */
+    /* display: flex; */
+    border-radius: 5px;
+    height: 22px;
     display: none;
 }
 
 .label-pane {
     padding: 1px 2px;
-    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     text-align: center;
+    float: left;
+    width: 46%;
+    display: flex;
+    padding-left: 5px;
 }
 
 .label-pane:last-child {
-    border-bottom: none;
+    border-right: none;
+    float:right;
 }
 
 .label-pane-selected {
@@ -157,4 +171,25 @@ html,body,#map {
 .part-title {
     padding: 5px;
     border-bottom: 1px solid #ccc;
+}
+
+.label-icon {
+    width: 20px;
+    height: 20px;
+    margin: 0 2px;
+    background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+}
+.label-icon-jc {
+    background-image: url(/asserts/images/jc-label.png);
+}
+
+.label-icon-qx {
+    background-image: url(/asserts/images/qx-label.png);
+}
+
+.wqTime-area {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid rgb(204, 204, 204);
 }
