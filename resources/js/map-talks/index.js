@@ -537,8 +537,8 @@ function drawBoundary(blist) {
     }
     let plyall =  new maptalks.Polygon(pArray, {
         symbol: {
-            // lineWidth: 2,
-            // lineColor: '#6098D3',
+            lineWidth: 2,
+            lineColor: 'rgba(0,0,0,0)',
             polygonFill: '#0c40c0',
             polygonOpacity: 0.5
         },
