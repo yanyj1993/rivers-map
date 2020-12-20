@@ -45,15 +45,7 @@ $(document).ready(() => {
 
 
     loadGeoJson('/json/nj.json', nj => {
-        L.geoJSON(nj, {
-            style: {
-                "color": "#00f",
-                "weight": 2,
-                "opacity": 0.5,
-                "fillColor": 'red',
-                "fillOpacity": 0,
-            },
-        }).addTo(app.map);
+
         // new L.Line3(changeGeoJson(nj)).addTo(app.map);
        drawBoundary(nj.features[0].geometry.coordinates[0])
     });
@@ -168,25 +160,41 @@ function initRiversSelect(rivers) {
 }
 
 
-// 初始化地图方法
+// 初始化地图方法{fadeAnimation: false}
 function initMap() {
-    app.map = L.map("map", {
+
+    app.map = L.map('map', {
         minZoom: 1,
         maxZoom: 16,
-        center: [32.04890673772848, 118.84283959865571],
-        zoom: 11,
-        zoomDelta: 0.5,
+        renderer: L.svg(),
+        fadeAnimation: false,
+        // center: [32.04890673772848, 118.84283959865571],
+        // zoom: 11,
+        // zoomDelta: 0.5,
+        rotate:true,touchRotate:true,
         fullscreenControl: false,
         zoomControl: false,
         attributionControl: false
     });
+
+    app.map.setView([32.04890673772848, 118.84283959865571], 11, false);
+
 //http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}//arcgis在线地图
-const baseLayer=L.tileLayer("http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",{
+const baseLayer=L.tileLayer.colorizr("http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",{
 // const baseLayer=L.tileLayer("//webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",{  // 卫星
 //     const baseLayer=L.tileLayer("//webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",{ // 街道
         attribution: '&copy; 高德地图',
-        subdomains: "1234"
+        subdomains: "1234",
+        colorize: function (pixel) {
+            // 这个方法用来调整所有的图片上的rgb值，pixel是图片原有的rgb值
+            pixel.r -= 13;
+            pixel.g -= 17;
+            pixel.b -= 90;
+            return pixel;
+        }
     });
+
+
 
     app.map.addLayer(baseLayer);
 
@@ -458,7 +466,7 @@ function drawBoundary(blist) {
         pArray = pArray.concat(points);
         pArray.push(pArray[0]);
     }
-    let plyall = L.polygon(pArray, { color:'transparent',fillColor:'#0c40c0',fillOpacity:0.8 });
+    let plyall = L.polygon(pArray, { color:'transparent',fillColor:'#0c40c0',fillOpacity:0.7 });
     plyall.addTo(app.map);
 }
 

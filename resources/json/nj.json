@@ -4945,6 +4945,10 @@
         ]
       },
       "properties": {
+        "wallColor": "red",
+        "roofColor": "rgb(255,128,0)",
+        "height": 500,
+        "minHeight": 0,
         "adcode": 320100,
         "name": "南京市",
         "center": [

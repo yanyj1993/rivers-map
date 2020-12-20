@@ -10,7 +10,7 @@ html,body,#map {
     top: 1%;
     z-index: 9999;
     background-color: #fff;
-    width: 210px;
+    width: 235px;
     box-shadow: 0 5px 5px #888888;
     padding: 5px;
     left: 2%;
@@ -79,7 +79,7 @@ html,body,#map {
     top: 7%;
     z-index: 9999;
     background-color: #fff;
-    width: 200px;
+    width: 224px;
     box-shadow: 0px 10px 5px #888888;
     left: 2%;
     display: flex;
@@ -120,7 +120,7 @@ html,body,#map {
     width: 200px;
     box-shadow: 0px 5px 5px #888888;
     padding: 5px;
-    left: 16%;
+    left: 18%;
     cursor: pointer;
     /* display: none; */
     /* display: flex; */
@@ -181,11 +181,11 @@ html,body,#map {
     -webkit-background-size: 100% 100%;
 }
 .label-icon-jc {
-    background-image: url(/asserts/images/jc-label-1.png);
+    background-image: url(/asserts/images/jc-label-2.png);
 }
 
 .label-icon-qx {
-    background-image: url(/asserts/images/qx-label-1.png);
+    background-image: url(/asserts/images/qx-label-2.png);
 }
 
 .wqTime-area {
@@ -208,4 +208,11 @@ html,body,#map {
     font-weight: 500;
     background-color: rgba(23, 112, 224, 0.7);
     text-align: center;
+}
+
+.leaflet-zoom-animated img {
+    -webkit-filter: invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(10%) !important;
+    -ms-filter: invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(10%) !important;
+    -moz-filter: invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(10%) !important;
+    filter: invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(1%) !important;
 }
