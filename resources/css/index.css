@@ -216,3 +216,14 @@ html,body,#map {
     -moz-filter: invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(10%) !important;
     filter: invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(1%) !important;
 }
+
+.theme {
+    position: fixed;
+    z-index: 999;
+    top: 2%;
+    right: 3%;
+}
+
+.theme > select {
+    padding: 5px;
+}

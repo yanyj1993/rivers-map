@@ -24,7 +24,10 @@ window.app = {
 
 //入口
 $(document).ready(() => {
+
+    // 初始化地图
     initMap();
+
     // loadRiverJson();
     loadGeoJson('/json/rivers-polygon.json', riversJson => {
         riversJson.features.forEach(feature => {
@@ -58,7 +61,7 @@ $(document).ready(() => {
 
     loadGeoJson('/json/nj.json', nj => {
         // new L.Line3(changeGeoJson(nj)).addTo(app.map);
-
+        app.area = nj.features[0].geometry.coordinates[0];
         const features = nj.features;
         let region  = [];
         features.forEach((g, i) => {
@@ -160,6 +163,10 @@ $(document).ready(() => {
             $('.wqTime-area').hide();
         }
     });
+    $('#themeSelect').change(function () {
+        const selected = $(this).val();
+        switchTheme(selected);
+    });
 
     $('#wqTime').click(function () {
 
@@ -180,62 +187,31 @@ function initRiversSelect(rivers) {
 }
 
 
-// 初始化地图方法{fadeAnimation: false}
+// 初始化地图方法
 function initMap() {
-    app.map = new maptalks.Map('map', {
+    // 初始化地图
+    app.map = new maptalks.Map(
+        // 地图实例div 的id
+        'map',
+        {
         center: [118.84283959865571,32.04890673772848],
         zoom: 11,
+        // 倾斜角度(设置)
         pitch: 56,
+        // 底图
         baseLayer: new maptalks.TileLayer('base', {
             urlTemplate: 'http://webrd{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
             subdomains: ['01','02','03','04'],
+            //通过这个进行主题的切换
             cssFilter : 'sepia(100%) invert(100%) saturate(100%) brightness(150%)'
             // cssFilter : 'invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(10%)'
             // attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
         })
     });
 
-    // map1.addMapTiles('http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}');
-    // app.map = L.map('map', {
-    //     minZoom: 1,
-    //     maxZoom: 16,
-    //     renderer: L.svg(),
-    //     fadeAnimation: false,
-    //     // center: [32.04890673772848, 118.84283959865571],
-    //     // zoom: 11,
-    //     // zoomDelta: 0.5,
-    //     rotate:true,touchRotate:true,
-    //     fullscreenControl: false,
-    //     zoomControl: false,
-    //     attributionControl: false
-    // });
-    //
-    // app.map.setView([32.04890673772848, 118.84283959865571], 11, false);
-
-//http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}//arcgis在线地图
-// const baseLayer=L.tileLayer.colorizr("http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",{
-// // const baseLayer=L.tileLayer("//webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",{  // 卫星
-// //     const baseLayer=L.tileLayer("//webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",{ // 街道
-//         attribution: '&copy; 高德地图',
-//         subdomains: "1234",
-//         colorize: function (pixel) {
-//             // 这个方法用来调整所有的图片上的rgb值，pixel是图片原有的rgb值
-//             pixel.r -= 13;
-//             pixel.g -= 17;
-//             pixel.b -= 90;
-//             return pixel;
-//         }
-//     });
-//
-//
-//     app.osmb = new OSMBuildings(app.map).load().set('/json/nj.json');
-//
-//     app.map.addLayer(baseLayer);
-//
-//     app.layers.baseLayer = baseLayer;
 }
 
-
+// 加载地图
 function loadRiverJson() {
     if(app.riversLayer) {
         if(app.selectedRiverFeatrue) {
@@ -510,7 +486,7 @@ function initLayer(layerName) {
 
 
 // 边界高亮及遮罩效果
-function drawBoundary(blist) {
+function drawBoundary(blist = app.area, op = 0.5) {
     // let pNW = { lat: 59.0, lng: 73.0 };
     let pNW = [73.0, 59.0];
     let pNE = [136.0, 59];
@@ -540,10 +516,13 @@ function drawBoundary(blist) {
             lineWidth: 2,
             lineColor: 'rgba(0,0,0,0)',
             polygonFill: '#0c40c0',
-            polygonOpacity: 0.5
+            polygonOpacity: op,
         },
     });
-    plyall.addTo(app.map.getLayer('vector-polygon'));
+    plyall.addTo(app.map.getLayer('area-shadow') || new maptalks.VectorLayer(
+        "area-shadow",
+        {  enableAltitude: true}
+    ).addTo(app.map));
 }
 
 function changeGeoJson(json) {
@@ -577,5 +556,32 @@ function drawPolygons(coordinates, properties) {
     };
 
     return [polygon, polygon.copy().setSymbol(shadowSymbol)];
+
+}
+
+function switchTheme(themeName) {
+
+    const  baseLayer = app.map.getBaseLayer();
+    const shadowLayer = app.map.getLayer('area-shadow');
+    baseLayer.hide();
+    shadowLayer.clear();
+    if(themeName == 'dark') {
+        // 设置css filter  , 底图隐藏展示就能刷新
+
+
+
+
+        baseLayer.setOptions({cssFilter: 'sepia(100%) invert(100%) saturate(100%) brightness(150%)'});
+
+        drawBoundary(app.area, 0.5)
+
+    } else {
+        // 将css filter 清除  , 底图隐藏展示就能刷新
+
+        baseLayer.setOptions({cssFilter: ''});
+        drawBoundary(app.area, 0.1)
+    }
+
+    baseLayer.show();
 
 }
