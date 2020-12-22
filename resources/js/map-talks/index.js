@@ -29,7 +29,7 @@ $(document).ready(() => {
     initMap();
 
     // loadRiverJson();
-    loadGeoJson('/json/rivers-polygon.json', riversJson => {
+    loadGeoJson('/json/rivers-polygon-tdt.json', riversJson => {
         riversJson.features.forEach(feature => {
             const per = Math.floor(Math.random()*10+1);
             const f = {
@@ -179,6 +179,32 @@ $(document).ready(() => {
     })
 });
 
+//模拟数据 返回数据格式
+const mock = {
+    // 监测站的数据模拟
+  'getAllJcData': {
+      code: 200,
+      success: true,
+      data: [
+          {
+              name: '', // 监测站名称
+              label: '', // 指定要展示的图标
+              coordinate: [0, 0], // 坐标 lng,lat
+              // 其他的属性 比如监测的水质数据
+          }
+      ]
+  }
+};
+
+
+// 模拟数据入口
+function loadData() {
+    // 检测站数据 气象的类似
+    app.data.jcLayer  = mock.getAllJcData.data;
+
+
+}
+
 
 function initRiversSelect(rivers) {
     const html = rivers.map(river => `<option value="${river.id}">${river.name}</option>`).join('');
@@ -199,20 +225,67 @@ function initMap() {
         // 倾斜角度(设置)
         pitch: 56,
         // 底图
-        baseLayer: new maptalks.TileLayer('base', {
-            urlTemplate: 'http://webrd{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
-            subdomains: ['01','02','03','04'],
-            //通过这个进行主题的切换
-            cssFilter : 'sepia(100%) invert(100%) saturate(100%) brightness(150%)'
-            // cssFilter : 'invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(10%)'
-            // attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
-        })
+        //     new maptalks.wm WMTSTileLayer('layer', {
+        //         tileSystem: [1, -1, -180, 90],
+        //         layer: 'vec',
+        //         tilematrixset: 'c',
+        //         format: 'tiles',
+        //         urlTemplate: 'http://t{s}.tianditu.com/vec_c/wmts?tk=34e168d12e2b79f61dc1e6e220659c71',
+        //         subdomains: ['1', '2', '3', '4', '5'],
+        //         attribution: '&copy; <a target="_blank" href="http://www.tianditu.cn">Tianditu</a>'
+        //     })
+        //     new maptalks.TileLayer('base', {
+        //     urlTemplate: 'http://webrd{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+        //     subdomains: ['01','02','03','04'],
+        //     //通过这个进行主题的切换
+        //     cssFilter : 'sepia(100%) invert(100%) saturate(100%) brightness(150%)'
+        //     // cssFilter : 'invert(1) grayscale(0) saturate(0.5) brightness(1.6) opacity(1) hue-rotate(334deg) sepia(10%)'
+        //     // attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+        // })
     });
+
+    var url = 'https://t0.tianditu.gov.cn/vec_c/wmts?request=GetCapabilities&service=wmts&tk=de0dc270a51aaca3dd4e64d4f8c81ff6';
+
+
+    maptalks.SpatialReference.loadWMTS(url, function (err, conf) {
+        if (err) {
+            throw new Error(err);
+        }
+        var params = conf[0];
+        params.urlTemplate += '&tk=de0dc270a51aaca3dd4e64d4f8c81ff6';
+        var tileLayer = new maptalks.TileLayer('tilelayer', params);
+        var spatialReference = params.spatialReference;
+        tileLayer.setOptions({cssFilter: 'sepia(100%) invert(100%) saturate(100%) brightness(150%)'});
+
+       app.map.setSpatialReference(spatialReference);
+        maptalks.SpatialReference.loadWMTS('https://t0.tianditu.gov.cn/cva_c/wmts?request=GetCapabilities&service=wmts&tk=de0dc270a51aaca3dd4e64d4f8c81ff6', function (err, conf) {
+            if (err) {
+                throw new Error(err);
+            }
+            var params = conf[0];
+            params.urlTemplate += '&tk=de0dc270a51aaca3dd4e64d4f8c81ff6';
+            var tileLayerc = new maptalks.TileLayer('tilelayerCVA', params);
+            var spatialReference = params.spatialReference;
+            tileLayerc.setOptions({cssFilter: 'sepia(100%) invert(100%) saturate(100%) brightness(150%)'});
+
+            app.map.setSpatialReference(spatialReference);
+            app.map.setBaseLayer(new maptalks.GroupTileLayer('base', [
+                tileLayer,
+
+                tileLayerc
+            ], {
+                cssFilter: 'sepia(100%) invert(100%) saturate(100%) brightness(150%)'
+            }));
+        });
+    });
+
+
 
 }
 
-// 加载地图
+// 加载河流数据
 function loadRiverJson() {
+    // 清除已有的河流数据
     if(app.riversLayer) {
         if(app.selectedRiverFeatrue) {
             app.riversLayer.removeGeometry(app.selectedRiverFeatrue);
@@ -220,13 +293,16 @@ function loadRiverJson() {
         app.riversLayer.clear();
     }
 
+    // 生成河流数据Polygon
     const riversPolygon =app.riversPolygon.map(p => {
 
+        //可以根据自己的数据进行设置， 方式是getSymbol(), 传水质参数
         return p.copy().setSymbol({
             lineWidth: 2,
             lineColor: 'rgba(0,0,0,0.1)',
             'polygonFill' : {
                 'type' : 'linear',
+                // 设置颜色渐变，
                 'colorStops' : [
                     [0.00, '#62BBE2'],
                     [0.20, '#6098D3'],
@@ -237,7 +313,7 @@ function loadRiverJson() {
                 ]
             }});
     });
-
+    // 将数据添加进图层
     app.riversLayer.addGeometry(riversPolygon);
     if(!app.riversBounds) {
         app.riversBounds = app.riversLayer.getExtent();
@@ -247,7 +323,7 @@ function loadRiverJson() {
 
 }
 
-
+// ajax 请求json方法
 function loadGeoJson(path, cb) {
     $.ajax(path, {}).done( josn => {
         cb && cb(josn);
@@ -255,21 +331,18 @@ function loadGeoJson(path, cb) {
     } )
 }
 
-
-function selectStyle(feature) {
-    console.log(feature);
-    return {color: 'red'};
-}
-
+// 开启河流数据变化
 function startRiversTime() {
 
     app.riversLayer.removeGeometry(app.selectedRiverFeatrue);
     app.riversTimeId = setInterval(function () {
+        // 可以通过河流数据进行获取。 这里采用模拟随机数进行模拟
         app.riversLayer.addGeometry(app.selectedRiverFeatrue.copy().setSymbol(getSymbol(Math.random()*10+1)))
 
     }, 1000)
 }
 
+// 该方法提供根据值进行渐变色取值，需要对应自己的数据区间进行修改
 function getSymbol(l) {
     if(l >= 0 && l <= 2) {
         return {
@@ -322,6 +395,7 @@ function getSymbol(l) {
     }
 }
 
+// 停止河流数据变化
 function stopRiversTime() {
 
 
@@ -344,6 +418,7 @@ function stopRiversTime() {
     app.riversTimeId = null;
 }
 
+// 添加标注图层
 function addLabel(layerName) {
     let layer = app.layers.label[layerName];
     if(layer==null) {
@@ -352,12 +427,13 @@ function addLabel(layerName) {
     app.map.addLayer(layer);
 }
 
-
+// 隐藏/移除标注图层
 function removeLabel(layerName) {
     let layer = app.layers.label[layerName];
     app.map.removeLayer(layer);
 }
 
+// 清除所有标注图层
 function removeAllLabel() {
     if(app.layers.label.qxLayer) {
         app.map.removeLayer(app.layers.label.qxLayer);
@@ -367,6 +443,7 @@ function removeAllLabel() {
     }
 }
 
+// 初始化标注图层
 function initLayer(layerName) {
    const data =  app.data[layerName];
     const layers = [];
@@ -400,7 +477,7 @@ function initLayer(layerName) {
            }
        ).addTo( app.layers.label[layerName]);
 
-
+        // 弹框内容
         const html = `<div class="custom-popup-content">
                           
                             <div class="popup-part">
@@ -475,6 +552,7 @@ function initLayer(layerName) {
            // 'minHeight': 120,
            // 'custom': false,
            //'autoOpenOn' : 'click',  //set to null if not to open when clicking on marker
+           // 点击非marker或者弹框自动关闭
            'autoCloseOn' : 'click'
        });
    });
@@ -485,7 +563,7 @@ function initLayer(layerName) {
 }
 
 
-// 边界高亮及遮罩效果
+// 设置区域外遮罩效果
 function drawBoundary(blist = app.area, op = 0.5) {
     // let pNW = { lat: 59.0, lng: 73.0 };
     let pNW = [73.0, 59.0];
@@ -525,16 +603,7 @@ function drawBoundary(blist = app.area, op = 0.5) {
     ).addTo(app.map));
 }
 
-function changeGeoJson(json) {
-    let  j = json;
-    let coordinates = json.features[0].geometry.coordinates;
-
-    j.features[0].properties = { color: '#99cc99' };
-    j.features[0].geometry.coordinates = coordinates.map(v => v.map(a => a.map(a1 => [...a1, 5])));
-    return j;
-}
-
-
+// 设置边界高亮和伪3d效果
 function drawPolygons(coordinates, properties) {
     const polygon = new maptalks.MultiPolygon(coordinates, {
         symbol: {
@@ -559,6 +628,7 @@ function drawPolygons(coordinates, properties) {
 
 }
 
+// 改变主题
 function switchTheme(themeName) {
 
     const  baseLayer = app.map.getBaseLayer();

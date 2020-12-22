@@ -15,7 +15,7 @@ app.use(Static(
 app.use( async ( ctx,next ) => {
     const url = ctx.request.url;
     const method = ctx.request.method;
-    console.log(`[${method}] - ${url}`)
+    console.log(`[${method}] - ${url}`);
     next();
     // ctx.body = url;
 });
