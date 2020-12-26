@@ -227,3 +227,14 @@ html,body,#map {
 .theme > select {
     padding: 5px;
 }
+
+.area {
+    position: fixed;
+    z-index: 999;
+    top: 2%;
+    right: 9%;
+}
+
+.area > select {
+    padding: 5px;
+}

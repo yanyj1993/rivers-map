@@ -30,10 +30,11 @@ $(document).ready(() => {
 
     // loadRiverJson();
     loadGeoJson('/json/rivers-polygon-tdt.json', riversJson => {
+        let index = 0;
         riversJson.features.forEach(feature => {
             const per = Math.floor(Math.random()*10+1);
             const f = {
-                id: feature.properties.FID,
+                id: feature.properties.KIND,
                 name: feature.properties.NAME,
                 coordinates: feature.geometry.coordinates.map(a => a.reverse()),
                 wq: per,
@@ -59,7 +60,7 @@ $(document).ready(() => {
     });
 
 
-    loadGeoJson('/json/nj.json', nj => {
+    loadGeoJson('/json/nj-part.json', nj => {
         // new L.Line3(changeGeoJson(nj)).addTo(app.map);
         app.area = nj.features[0].geometry.coordinates[0];
         const features = nj.features;
@@ -143,7 +144,7 @@ $(document).ready(() => {
             app.selectedRiverFeatrue = null;
         }
         if(!!selected) {
-            const selectedRivers = app.riversPolygon.filter(v => v.properties.FID ==selected);
+            const selectedRivers = app.riversPolygon.filter(v => v.properties.KIND ==selected);
            app.map.fitExtent(selectedRivers[0].getExtent());
 
             app.selectedRiverFeatrue = selectedRivers[0].copy().setSymbol({
@@ -166,6 +167,11 @@ $(document).ready(() => {
     $('#themeSelect').change(function () {
         const selected = $(this).val();
         switchTheme(selected);
+    });
+
+    $('#areaSelect').change(function () {
+        const selected = $(this).val();
+        switchArea(selected);
     });
 
     $('#wqTime').click(function () {
@@ -223,7 +229,7 @@ function initMap() {
         center: [118.84283959865571,32.04890673772848],
         zoom: 11,
         // 倾斜角度(设置)
-        pitch: 56,
+        pitch: 45,
         // 底图
         //     new maptalks.wm WMTSTileLayer('layer', {
         //         tileSystem: [1, -1, -180, 90],
@@ -613,7 +619,7 @@ function drawPolygons(coordinates, properties) {
             polygonOpacity: 0.5
         },
         properties: {
-            altitude : 150
+            altitude : 120
         }
     });
     const shadowSymbol = {
@@ -653,5 +659,52 @@ function switchTheme(themeName) {
     }
 
     baseLayer.show();
+
+}
+
+//改变 行政区域
+function switchArea(areaName) {
+    const shadowLayer = app.map.getLayer('area-shadow');
+    const vectorLayer = app.map.getLayer('vector-polygon');
+    shadowLayer.clear();
+
+    vectorLayer.clear();
+    if(areaName == 'river') {
+        // 设置css filter  , 底图隐藏展示就能刷新
+
+        loadGeoJson('/json/nj-part.json', nj => {
+            // new L.Line3(changeGeoJson(nj)).addTo(app.map);
+            app.area = nj.features[0].geometry.coordinates[0];
+            const features = nj.features;
+            let region  = [];
+            features.forEach((g, i) => {
+                const properties = g.properties;
+                const coordinates = g.geometry.coordinates;
+                region .push(...drawPolygons(coordinates, 30));
+            });
+            const polygonsLayer = vectorLayer
+            .addGeometry([region[0]]);
+            const polygonsLayer1 = vectorLayer.addGeometry([region[1]]);
+            drawBoundary(nj.features[0].geometry.coordinates[0])
+        });
+
+
+
+    } else {
+        loadGeoJson('/json/nj.json', nj => {
+            // new L.Line3(changeGeoJson(nj)).addTo(app.map);
+            app.area = nj.features[0].geometry.coordinates[0];
+            const features = nj.features;
+            let region  = [];
+            features.forEach((g, i) => {
+                const properties = g.properties;
+                const coordinates = g.geometry.coordinates;
+                region .push(...drawPolygons(coordinates, 30));
+            });
+            const polygonsLayer = vectorLayer.addGeometry([region[0]]);
+            const polygonsLayer1 = vectorLayer.addGeometry([region[1]]);
+            drawBoundary(nj.features[0].geometry.coordinates[0])
+        });
+    }
 
 }
